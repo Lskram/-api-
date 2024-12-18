@@ -1,5 +1,5 @@
 // utils.js
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://express-test-api-l0zc.onrender.com';
 
 async function handleAPIError(response) {
     const data = await response.json();
@@ -13,7 +13,7 @@ async function handleAPIError(response) {
             window.location.href = 'login.html';
             throw new Error(data.message || 'Token ไม่ถูกต้องหรือหมดอายุ');
         case 404:
-            throw new Error(data.message || 'ไม่พบผู้ใช้งาน');
+            throw new Error(data.message || 'ไม่พบข้อมูล');
         case 500:
             throw new Error(data.message || 'เกิดข้อผิดพลาดในการดำเนินการ');
         default:
@@ -28,56 +28,46 @@ async function handleResponse(response) {
     return await response.json();
 }
 
-function checkTokenExpiration() {
+async function fetchWithAuth(url, options = {}) {
     const token = localStorage.getItem('token');
-    if (!token) return false;
-    
+    if (!token) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    const headers = {
+        ...options.headers,
+        'Authorization': `Bearer ${token}`
+    };
+
     try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        if (payload.exp < Date.now() / 1000) {
-            localStorage.removeItem('token');
-            return false;
-        }
-        return true;
+        const response = await fetch(url, { ...options, headers });
+        return await handleResponse(response);
     } catch (error) {
-        localStorage.removeItem('token');
-        return false;
+        throw new Error('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
     }
 }
 
-// สำหรับแสดง Alert
-function showAlert(alertElement, message, isError = false) {
-    alertElement.textContent = message;
-    alertElement.style.display = 'block';
-    alertElement.classList.add(isError ? 'alert-danger' : 'alert-success');
-    alertElement.classList.remove(isError ? 'alert-success' : 'alert-danger');
-    setTimeout(() => {
-        alertElement.style.display = 'none';
-    }, 3000);
-}
-
-// สำหรับเรียก API ที่อยู่
+// ฟังก์ชั่นสำหรับดึงข้อมูลที่อยู่
 async function fetchProvinces() {
-    const response = await fetch(`${API_URL}/provinces/all`);
+    const response = await fetch(`${API_URL}/provinces`);
     return handleResponse(response);
 }
 
 async function fetchDistricts(provinceId) {
-    const response = await fetch(`${API_URL}/provinces/${provinceId}`);
+    const response = await fetch(`${API_URL}/amphures?provinceId=${provinceId}`);
     return handleResponse(response);
 }
 
-async function fetchSubDistricts(provinceId, districtId) {
-    const response = await fetch(`${API_URL}/provinces/${provinceId}/${districtId}`);
+async function fetchSubDistricts(districtId) {
+    const response = await fetch(`${API_URL}/tambons?amphureId=${districtId}`);
     return handleResponse(response);
 }
 
 export {
     API_URL,
-    handleAPIError,
     handleResponse,
-    checkTokenExpiration,
-    showAlert,
+    fetchWithAuth,
     fetchProvinces,
     fetchDistricts,
     fetchSubDistricts

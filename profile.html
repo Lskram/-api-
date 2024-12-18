@@ -6,78 +6,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>โปรไฟล์</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .profile-container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            background-color: #fff;
-        }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles/main.css" rel="stylesheet">
 </head>
 
-<body class="bg-light">
+<body>
     <div class="container">
-        <div class="profile-container">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>ข้อมูลผู้ใช้</h2>
-                <button class="btn btn-danger" id="logoutBtn">ออกจากระบบ</button>
+        <!-- Profile Header -->
+        <div class="form-container">
+            <div class="profile-header">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user-circle fa-4x text-white"></i>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <h2 class="mb-1">ข้อมูลผู้ใช้</h2>
+                        <p class="text-light mb-0" id="userEmail"></p>
+                    </div>
+                    <div class="col-auto">
+                        <button id="logoutBtn" class="btn btn-light">
+                            <i class="fas fa-sign-out-alt me-2"></i>ออกจากระบบ
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div id="alertContainer"></div>
 
-            <form id="profileForm">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">ชื่อผู้ใช้</label>
-                        <input type="text" class="form-control" name="username" disabled>
+            <!-- Profile Form -->
+            <form id="profileForm" class="needs-validation" novalidate>
+                <!-- ข้อมูลส่วนตัว -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <i class="fas fa-user me-2"></i>ข้อมูลส่วนตัว
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">อีเมล</label>
-                        <input type="email" class="form-control" name="email" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">ชื่อ</label>
-                        <input type="text" class="form-control" name="fname" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">นามสกุล</label>
-                        <input type="text" class="form-control" name="lname" required>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">จังหวัด</label>
-                        <select class="form-select" name="province" id="province" required>
-                            <option value="">เลือกจังหวัด</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">อำเภอ/เขต</label>
-                        <select class="form-select" name="district" id="district" required>
-                            <option value="">เลือกอำเภอ/เขต</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">ตำบล/แขวง</label>
-                        <select class="form-select" name="sub_district" id="sub_district" required>
-                            <option value="">เลือกตำบล/แขวง</option>
-                        </select>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="username" name="username"
+                                        placeholder="ชื่อผู้ใช้" disabled>
+                                    <label for="username">ชื่อผู้ใช้</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="อีเมล"
+                                        required>
+                                    <label for="email">อีเมล</label>
+                                    <div class="invalid-feedback">กรุณากรอกอีเมลที่ถูกต้อง</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="fname" name="fname" placeholder="ชื่อ"
+                                        required>
+                                    <label for="fname">ชื่อ</label>
+                                    <div class="invalid-feedback">กรุณากรอกชื่อ</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="lname" name="lname"
+                                        placeholder="นามสกุล" required>
+                                    <label for="lname">นามสกุล</label>
+                                    <div class="invalid-feedback">กรุณากรอกนามสกุล</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
+
+                <!-- ที่อยู่ -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <i class="fas fa-map-marker-alt me-2"></i>ที่อยู่
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="province" name="province" required>
+                                        <option value="">เลือกจังหวัด</option>
+                                    </select>
+                                    <label for="province">จังหวัด</label>
+                                    <div class="invalid-feedback">กรุณาเลือกจังหวัด</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="district" name="district" required>
+                                        <option value="">เลือกอำเภอ/เขต</option>
+                                    </select>
+                                    <label for="district">อำเภอ/เขต</label>
+                                    <div class="invalid-feedback">กรุณาเลือกอำเภอ/เขต</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="sub_district" name="sub_district" required>
+                                        <option value="">เลือกตำบล/แขวง</option>
+                                    </select>
+                                    <label for="sub_district">ตำบล/แขวง</label>
+                                    <div class="invalid-feedback">กรุณาเลือกตำบล/แขวง</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- บันทึกข้อมูล -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save me-2"></i>บันทึกข้อมูล
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
+    <div class="loading-overlay" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">กำลังโหลด...</span>
+        </div>
+    </div>
+
     <script type="module">
+        import { validateForm, addValidationListeners } from './validation.js';
+        import { showLoading, hideLoading, createAlert } from './interface.js';
         import {
             API_URL,
             handleResponse,
-            showAlert,
-            checkTokenExpiration,
+            fetchWithAuth,
             fetchProvinces,
             fetchDistricts,
             fetchSubDistricts
@@ -87,112 +149,115 @@
         const alertContainer = document.getElementById('alertContainer');
 
         // ตรวจสอบการล็อกอิน
-        if (!token || !checkTokenExpiration()) {
+        if (!token) {
             window.location.href = 'login.html';
         }
 
+        // โหลดข้อมูลผู้ใช้
         async function loadProfile() {
             try {
-                const response = await fetch(`${API_URL}/profile`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
+                document.querySelector('.loading-overlay').style.display = 'flex';
+                const response = await fetchWithAuth(`${API_URL}/profile`);
 
-                const profile = await handleResponse(response);
-
-                // Fill form with profile data
+                // Fill profile data
                 const form = document.getElementById('profileForm');
-                form.username.value = profile.username;
-                form.email.value = profile.email;
-                form.fname.value = profile.fname;
-                form.lname.value = profile.lname;
+                form.username.value = response.username;
+                form.email.value = response.email;
+                form.fname.value = response.fname;
+                form.lname.value = response.lname;
 
-                // Load address data
+                // Set email in header
+                document.getElementById('userEmail').textContent = response.email;
+
+                // Load address
                 await loadProvinces();
-                if (profile.province) {
-                    form.province.value = profile.province;
-                    await loadDistricts(profile.province);
-                    if (profile.district) {
-                        form.district.value = profile.district;
-                        await loadSubdistricts(profile.province, profile.district);
-                        if (profile.sub_district) {
-                            form.sub_district.value = profile.sub_district;
+                if (response.province) {
+                    form.province.value = response.province;
+                    await loadDistricts(response.province);
+                    if (response.district) {
+                        form.district.value = response.district;
+                        await loadSubdistricts(response.province, response.district);
+                        if (response.sub_district) {
+                            form.sub_district.value = response.sub_district;
                         }
                     }
                 }
             } catch (error) {
-                showAlert(alertContainer, error.message, true);
+                alertContainer.appendChild(createAlert(error.message, 'danger'));
+            } finally {
+                document.querySelector('.loading-overlay').style.display = 'none';
             }
         }
 
+        // โหลดข้อมูลที่อยู่
         async function loadProvinces() {
-            try {
-                const provinces = await fetchProvinces();
-                const provinceSelect = document.getElementById('province');
-                provinces.forEach(province => {
-                    const option = document.createElement('option');
-                    option.value = province.id;
-                    option.textContent = province.name_th;
-                    provinceSelect.appendChild(option);
-                });
-            } catch (error) {
-                showAlert(alertContainer, error.message, true);
-            }
+            const provinces = await fetchProvinces();
+            const provinceSelect = document.getElementById('province');
+            provinceSelect.innerHTML = '<option value="">เลือกจังหวัด</option>';
+            provinces.forEach(province => {
+                const option = document.createElement('option');
+                option.value = province.id;
+                option.textContent = province.name_th;
+                provinceSelect.appendChild(option);
+            });
         }
 
         async function loadDistricts(provinceId) {
-            try {
-                const districts = await fetchDistricts(provinceId);
-                const districtSelect = document.getElementById('district');
-                districtSelect.innerHTML = '<option value="">เลือกอำเภอ/เขต</option>';
-                districts.forEach(district => {
-                    const option = document.createElement('option');
-                    option.value = district.id;
-                    option.textContent = district.name_th;
-                    districtSelect.appendChild(option);
-                });
-            } catch (error) {
-                showAlert(alertContainer, error.message, true);
-            }
+            const districts = await fetchDistricts(provinceId);
+            const districtSelect = document.getElementById('district');
+            districtSelect.innerHTML = '<option value="">เลือกอำเภอ/เขต</option>';
+            districts.forEach(district => {
+                const option = document.createElement('option');
+                option.value = district.id;
+                option.textContent = district.name_th;
+                districtSelect.appendChild(option);
+            });
         }
 
         async function loadSubdistricts(provinceId, districtId) {
-            try {
-                const subdistricts = await fetchSubDistricts(provinceId, districtId);
-                const subdistrictSelect = document.getElementById('sub_district');
-                subdistrictSelect.innerHTML = '<option value="">เลือกตำบล/แขวง</option>';
-                subdistricts.forEach(subdistrict => {
-                    const option = document.createElement('option');
-                    option.value = subdistrict.id;
-                    option.textContent = subdistrict.name_th;
-                    subdistrictSelect.appendChild(option);
-                });
-            } catch (error) {
-                showAlert(alertContainer, error.message, true);
-            }
+            const subdistricts = await fetchSubDistricts(provinceId, districtId);
+            const subdistrictSelect = document.getElementById('sub_district');
+            subdistrictSelect.innerHTML = '<option value="">เลือกตำบล/แขวง</option>';
+            subdistricts.forEach(subdistrict => {
+                const option = document.createElement('option');
+                option.value = subdistrict.id;
+                option.textContent = subdistrict.name_th;
+                subdistrictSelect.appendChild(option);
+            });
         }
 
+        // Event Handlers
         document.getElementById('profileForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+
             const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData);
-            delete data.username; // ไม่ต้องส่งค่า username เพราะไม่ให้แก้ไข
+            const errors = validateForm(formData);
+            if (errors.length > 0) {
+                errors.forEach(error => {
+                    alertContainer.appendChild(createAlert(error, 'danger'));
+                });
+                return;
+            }
+
+            const button = e.target.querySelector('button[type="submit"]');
+            const originalText = showLoading(button);
+            document.querySelector('.loading-overlay').style.display = 'flex';
 
             try {
-                const response = await fetch(`${API_URL}/profile`, {
+                const response = await fetchWithAuth(`${API_URL}/profile`, {
                     method: 'PUT',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(Object.fromEntries(formData))
                 });
 
-                await handleResponse(response);
-                showAlert(alertContainer, 'อัพเดทข้อมูลสำเร็จ');
+                alertContainer.appendChild(createAlert('อัพเดทข้อมูลสำเร็จ'));
             } catch (error) {
-                showAlert(alertContainer, error.message, true);
+                alertContainer.appendChild(createAlert(error.message, 'danger'));
+            } finally {
+                hideLoading(button, originalText);
+                document.querySelector('.loading-overlay').style.display = 'none';
             }
         });
 
@@ -202,6 +267,7 @@
             window.location.href = 'login.html';
         });
 
+        // Event Listeners for Address Selection
         document.getElementById('province').addEventListener('change', (e) => {
             if (e.target.value) {
                 loadDistricts(e.target.value);
@@ -215,7 +281,8 @@
             }
         });
 
-        // โหลดข้อมูลผู้ใช้เมื่อโหลดหน้า
+        // Initialize
+        addValidationListeners(document.getElementById('profileForm'));
         loadProfile();
     </script>
 </body>
