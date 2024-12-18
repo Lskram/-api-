@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบลงทะเบียน</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="form-container">
+            <h2 class="text-center mb-4">แบบฟอร์มลงทะเบียน</h2>
+            <div class="alert alert-success" style="display: none;" id="successAlert"></div>
+            <div class="alert alert-danger" style="display: none;" id="errorAlert"></div>
+            
+            <form id="registerForm" class="needs-validation" novalidate>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="firstName" class="form-label">ชื่อ</label>
+                        <input type="text" class="form-control" id="firstName" required>
+                        <div class="invalid-feedback">
+                            กรุณากรอกชื่อ
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lastName" class="form-label">นามสกุล</label>
+                        <input type="text" class="form-control" id="lastName" required>
+                        <div class="invalid-feedback">
+                            กรุณากรอกนามสกุล
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="phone" class="form-label">เบอร์โทรศัพท์</label>
+                        <input type="tel" class="form-control" id="phone" pattern="[0-9]{10}" required>
+                        <div class="invalid-feedback">
+                            กรุณากรอกเบอร์โทรศัพท์ 10 หลัก
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="studentId" class="form-label">รหัสนักศึกษา</label>
+                        <input type="text" class="form-control" id="studentId" pattern="[0-9]{10}" required>
+                        <div class="invalid-feedback">
+                            กรุณากรอกรหัสนักศึกษา 10 หลัก
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="idCard" class="form-label">เลขบัตรประชาชน</label>
+                        <input type="text" class="form-control" id="idCard" pattern="[0-9]{13}" required>
+                        <div class="invalid-feedback">
+                            กรุณากรอกเลขบัตรประชาชน 13 หลัก
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="email" class="form-label">อีเมล</label>
+                        <input type="email" class="form-control" id="email" required>
+                        <div class="invalid-feedback">
+                            กรุณากรอกอีเมลให้ถูกต้อง
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="province" class="form-label">จังหวัด</label>
+                        <select class="form-select" id="province" required>
+                            <option value="">เลือกจังหวัด</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            กรุณาเลือกจังหวัด
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="district" class="form-label">อำเภอ/เขต</label>
+                        <select class="form-select" id="district" required>
+                            <option value="">เลือกอำเภอ/เขต</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            กรุณาเลือกอำเภอ/เขต
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="subdistrict" class="form-label">ตำบล/แขวง</label>
+                        <select class="form-select" id="subdistrict" required>
+                            <option value="">เลือกตำบล/แขวง</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            กรุณาเลือกตำบล/แขวง
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button class="btn btn-primary w-100" type="submit">ลงทะเบียน</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_URL = 'https://express-test-api-l0zc.onrender.com';
+
+        // แสดงข้อความแจ้งเตือน
+        function showAlert(message, isError = false) {
+            const alertElement = isError ? document.getElementById('errorAlert') : document.getElementById('successAlert');
+            alertElement.textContent = message;
+            alertElement.style.display = 'block';
+            setTimeout(() => alertElement.style.display = 'none', 3000);
+        }
+
+        // โหลดข้อมูลจังหวัด
+        async function loadProvinces() {
+            try {
+                const response = await fetch(`${API_URL}/provinces`);
+                const provinces = await response.json();
+                const provinceSelect = document.getElementById('province');
+                provinces.forEach(province => {
+                    const option = document.createElement('option');
+                    option.value = province.id;
+                    option.textContent = province.name_th;
+                    provinceSelect.appendChild(option);
+                });
+            } catch (error) {
+                showAlert('ไม่สามารถโหลดข้อมูลจังหวัดได้', true);
+            }
+        }
+
+        // โหลดข้อมูลอำเภอ
+        async function loadDistricts(provinceId) {
+            try {
+                const response = await fetch(`${API_URL}/amphures?provinceId=${provinceId}`);
+                const districts = await response.json();
+                const districtSelect = document.getElementById('district');
+                districtSelect.innerHTML = '<option value="">เลือกอำเภอ/เขต</option>';
+                districts.forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district.id;
+                    option.textContent = district.name_th;
+                    districtSelect.appendChild(option);
+                });
+            } catch (error) {
+                showAlert('ไม่สามารถโหลดข้อมูลอำเภอได้', true);
+            }
+        }
+
+        // โหลดข้อมูลตำบล
+        async function loadSubdistricts(districtId) {
+            try {
+                const response = await fetch(`${API_URL}/tambons?amphureId=${districtId}`);
+                const subdistricts = await response.json();
+                const subdistrictSelect = document.getElementById('subdistrict');
+                subdistrictSelect.innerHTML = '<option value="">เลือกตำบล/แขวง</option>';
+                subdistricts.forEach(subdistrict => {
+                    const option = document.createElement('option');
+                    option.value = subdistrict.id;
+                    option.textContent = subdistrict.name_th;
+                    subdistrictSelect.appendChild(option);
+                });
+            } catch (error) {
+                showAlert('ไม่สามารถโหลดข้อมูลตำบลได้', true);
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('province').addEventListener('change', (e) => {
+            if (e.target.value) {
+                loadDistricts(e.target.value);
+            }
+        });
+
+        document.getElementById('district').addEventListener('change', (e) => {
+            if (e.target.value) {
+                loadSubdistricts(e.target.value);
+            }
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!e.target.checkValidity()) {
+                e.stopPropagation();
+                e.target.classList.add('was-validated');
+                return;
+            }
+            
+            // เก็บข้อมูลจากฟอร์ม
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                phone: document.getElementById('phone').value,
+                studentId: document.getElementById('studentId').value,
+                idCard: document.getElementById('idCard').value,
+                email: document.getElementById('email').value,
+                province: document.getElementById('province').options[document.getElementById('province').selectedIndex].text,
+                district: document.getElementById('district').options[document.getElementById('district').selectedIndex].text,
+                subdistrict: document.getElementById('subdistrict').options[document.getElementById('subdistrict').selectedIndex].text
+            };
+
+            // แสดงข้อมูลที่ได้ในคอนโซล (สามารถปรับเปลี่ยนตามต้องการ)
+            console.log('Form Data:', formData);
+            showAlert('ลงทะเบียนสำเร็จ');
+            e.target.reset();
+            e.target.classList.remove('was-validated');
+        });
+
+        // โหลดข้อมูลจังหวัดเมื่อโหลดหน้าเว็บ
+        loadProvinces();
+    </script>
+</body>
+</html>
